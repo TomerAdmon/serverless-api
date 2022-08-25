@@ -24,6 +24,17 @@ data "archive_file" "lambda_hello_world" {
   output_path = "${path.module}/hello-world.zip"
 }
 
+## used as a watcher for updated in the lambda sources
+resource "null_resource" "provision-builder" {
+  triggers = {
+    src_hash = "${data.archive_file.lambda_hello_world.output_sha}"
+  }
+
+  provisioner "local-exec" {
+    command = "echo Changes discovered in lambda code"
+  }
+}
+
 resource "aws_s3_object" "lambda_hello_world" {
   bucket = aws_s3_bucket.lambda_bucket.id
 
