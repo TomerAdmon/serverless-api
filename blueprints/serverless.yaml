@@ -1,0 +1,39 @@
+spec_version: 2
+description: Serverless API
+
+inputs:
+  aws_region:
+    type: string
+    default: eu-central-1
+  host:
+    type: execution-host
+    
+# blueprint outputs define which data that was generated during environment provisioning will be returned to the user, API or CI.
+outputs:
+  base_url:
+    value: '{{ .grains.serverless-api.outputs.base_url }}/hello?Name=Terraform'
+    kind: link
+
+grains:
+  serverless-api:
+    kind: terraform
+    spec:
+      source:
+        store: serverless-api
+        path: sample
+      host:
+        name: '{{ .inputs.host }}'
+        # A service account annotated with a role ARN with permissions to run the asset
+        # service-account: <service-account-name>
+      inputs:
+      - aws_region: '{{ .inputs.aws_region }}'
+      # The environment variables declared in this section will be available during the grain deployment as well as the grain destroy phase
+      # env-vars:
+      # - VAR_NAME: var value
+      env-vars: []
+      outputs:
+      - base_url
+      - function_name
+      - lambda_bucket_name
+    # The terraform version that will be used to deploy the module
+    tf-version: 1.2.7
