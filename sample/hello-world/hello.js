@@ -2,7 +2,7 @@
 
 module.exports.handler = async (event) => {
   console.log('Event: ', event);
-  let responseMessage = 'Hello, World!';
+  let responseMessage = 'Hello, Tomer!';
 
   if (event.queryStringParameters && event.queryStringParameters['Name']) {
     responseMessage = 'Terraform Webinar Update: ' + event.queryStringParameters['Name'] + '!';
