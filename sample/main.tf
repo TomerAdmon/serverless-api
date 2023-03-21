@@ -2,8 +2,7 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "random_pet" "lambda_bucket_name" {
-  prefix = "serverless-api"
+resource "random_id" "lambda_bucket_name" {
   length = 4
 }
 
