@@ -65,7 +65,7 @@ resource "aws_cloudwatch_log_group" "hello_world" {
 }
 
 resource "aws_iam_role" "lambda_exec" {
-  name = "serverless_lambda-${random_pet.lambda_bucket_name.id}"
+  name = substr("serverless_lambda-${random_pet.lambda_bucket_name.id}", 0, 32)
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
