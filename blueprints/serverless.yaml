@@ -1,28 +1,27 @@
 spec_version: 2
-description: Serverless API
-
+description: Auto generated blueprint for terraform module hello-lambda
+# blueprint inputs can be provided by the user, API or CI plugin when creating an environment from this blueprint.
 inputs:
   aws_region:
     type: string
     default: eu-central-1
-  host:
-    type: execution-host
-    
 # blueprint outputs define which data that was generated during environment provisioning will be returned to the user, API or CI.
 outputs:
   base_url:
-    value: '{{ .grains.serverless-api.outputs.base_url }}/hello?Name=Terraform'
+    value: '{{ .grains.hello-lambda.outputs.base_url }}/hello?Name=Terraform'
     kind: link
-
 grains:
-  serverless-api:
+  hello-lambda:
     kind: terraform
     spec:
       source:
         store: serverless-api
         path: sample
       host:
-        name: '{{ .inputs.host }}'
+      # Execution Host - the platform where the asset executable will run.
+      # For example, a Kubernetes cluster can be used as an execution host.
+        name: demo-dev
+        service-account: torque-dev-sa
         # A service account annotated with a role ARN with permissions to run the asset
         # service-account: <service-account-name>
       inputs:
@@ -37,16 +36,17 @@ grains:
       - lambda_bucket_name
     # The terraform version that will be used to deploy the module
     tf-version: 1.2.7
-
+  
   health-check:
     kind: shell
-    depends-on: serverless-api
+    depends-on: hello-lambda
     spec:
       agent:
-        name: '{{ .inputs.host }}'
+        name: demo-dev
+        service-account: torque-dev-sa
       activities:
         deploy:
           commands:
-            - "echo fetching serverless api"
+            - "echo fetching lambda api"
             - "apt-get install curl -y"
-            - "curl -v {{ .grains.serverless-api.outputs.base_url }}/hello?Name=Terraform | head -n 1"
+            - "curl -v {{ .grains.hello-lambda.outputs.base_url }}/hello?Name=Terraform | head -n 1"
