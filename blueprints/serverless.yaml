@@ -37,3 +37,16 @@ grains:
       - lambda_bucket_name
     # The terraform version that will be used to deploy the module
     tf-version: 1.2.7
+
+  health-check:
+    kind: shell
+    depends-on: serverless-api
+    spec:
+      agent:
+        name: '{{ .inputs.host }}'
+      activities:
+        deploy:
+          commands:
+            - "echo fetching serverless api"
+            - "apt-get install curl -y"
+            - "curl -I {{ .grains.serverless-api.outputs.base_url }}/hello?Name=Terraform | head -n 1"
