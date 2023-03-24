@@ -5,10 +5,13 @@ inputs:
   aws_region:
     type: string
     default: eu-central-1
+  api_send_value:
+    type: string
+    default: Terraform
 # blueprint outputs define which data that was generated during environment provisioning will be returned to the user, API or CI.
 outputs:
   base_url:
-    value: '{{ .grains.hello-lambda.outputs.base_url }}/hello?Name=Terraform'
+    value: '{{ .grains.hello-lambda.outputs.base_url }}/hello?Name={{ .inputs.api_send_value }}'
     kind: link
 grains:
   hello-lambda:
@@ -49,4 +52,4 @@ grains:
           commands:
             - "echo fetching lambda api"
             - "apt-get install curl -y"
-            - "curl -v {{ .grains.hello-lambda.outputs.base_url }}/hello?Name=Terraform | head -n 1"
+            - "curl -v {{ .grains.hello-lambda.outputs.base_url }}/hello?Name={{ .inputs.api_send_value }} | head -n 1"
