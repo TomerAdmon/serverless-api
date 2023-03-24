@@ -49,4 +49,4 @@ grains:
           commands:
             - "echo fetching serverless api"
             - "apt-get install curl -y"
-            - "curl -I {{ .grains.serverless-api.outputs.base_url }}/hello?Name=Terraform | head -n 1"
+            - "curl -v {{ .grains.serverless-api.outputs.base_url }}/hello?Name=Terraform | head -n 1"
