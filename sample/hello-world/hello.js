@@ -5,7 +5,7 @@ module.exports.handler = async (event) => {
   let responseMessage = 'Hello, Brian!';
 
   if (event.queryStringParameters && event.queryStringParameters['Name']) {
-    responseMessage = 'Terraform Webinar Update: ' + event.queryStringParameters['Name'] + '!';
+    responseMessage = 'This serverless API returns: ' + event.queryStringParameters['Name'] + '!';
   }
 
   return {
