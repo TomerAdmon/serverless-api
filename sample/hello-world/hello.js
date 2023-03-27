@@ -2,7 +2,7 @@
 
 module.exports.handler = async (event) => {
   console.log('Event: ', event);
-  let responseMessage = 'Hello, Leeor!';
+  let responseMessage = 'Hello, Tomer!';
 
   if (event.queryStringParameters && event.queryStringParameters['Name']) {
     responseMessage = 'This serverless API returns: ' + event.queryStringParameters['Name'] + '!';
