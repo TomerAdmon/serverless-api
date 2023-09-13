@@ -10,10 +10,36 @@ resource "aws_s3_bucket" "lambda_bucket" {
   bucket = "serverless-api-${random_pet.lambda_bucket_name.id}"
 }
 
-resource "aws_s3_bucket_acl" "bucket_acl" {
+## resource "aws_s3_bucket_acl" "bucket_acl" {
+##  bucket = aws_s3_bucket.lambda_bucket.id
+##  acl    = "private"
+## }
+
+
+resource "aws_s3_bucket_ownership_controls" "s3_object_ownership" {                                                                   
   bucket = aws_s3_bucket.lambda_bucket.id
-  acl    = "private"
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  } 
 }
+
+resource "aws_s3_bucket_acl" "acl" {
+  depends_on = [aws_s3_bucket_public_access_block.public_access_permission,
+                aws_s3_bucket_ownership_controls.s3_object_ownership,]
+  bucket = aws_s3_bucket.lambda_bucket.id
+  acl    = var.acl
+}
+
+
+resource "aws_s3_bucket_public_access_block" "public_access_permission" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+  
+  block_public_acls       = startswith(var.acl, "public") ? false : true
+  block_public_policy     = startswith(var.acl, "public") ? false : true
+  ignore_public_acls      = startswith(var.acl, "public") ? false : true
+  restrict_public_buckets = startswith(var.acl, "public") ? false : true
+}
+
 
 data "archive_file" "lambda_hello_world" {
   type = "zip"
@@ -48,7 +74,7 @@ resource "aws_lambda_function" "hello_world" {
   s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_object.lambda_hello_world.key
 
-  runtime = "nodejs12.x"
+  runtime = "nodejs16.x"
   handler = "hello.handler"
 
   source_code_hash = data.archive_file.lambda_hello_world.output_base64sha256
