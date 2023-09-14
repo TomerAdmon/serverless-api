@@ -27,7 +27,7 @@ resource "aws_s3_bucket_acl" "acl" {
   depends_on = [aws_s3_bucket_public_access_block.public_access_permission,
                 aws_s3_bucket_ownership_controls.s3_object_ownership,]
   bucket = aws_s3_bucket.lambda_bucket.id
-  acl    = private
+  acl    = "private"
 }
 
 
