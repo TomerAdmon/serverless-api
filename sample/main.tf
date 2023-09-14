@@ -27,17 +27,17 @@ resource "aws_s3_bucket_acl" "acl" {
   depends_on = [aws_s3_bucket_public_access_block.public_access_permission,
                 aws_s3_bucket_ownership_controls.s3_object_ownership,]
   bucket = aws_s3_bucket.lambda_bucket.id
-  acl    = var.acl
+  acl    = private
 }
 
 
 resource "aws_s3_bucket_public_access_block" "public_access_permission" {
   bucket = aws_s3_bucket.lambda_bucket.id
   
-  block_public_acls       = startswith(var.acl, "public") ? false : true
-  block_public_policy     = startswith(var.acl, "public") ? false : true
-  ignore_public_acls      = startswith(var.acl, "public") ? false : true
-  restrict_public_buckets = startswith(var.acl, "public") ? false : true
+  block_public_acls       = startswith("private", "public") ? false : true
+  block_public_policy     = startswith("private", "public") ? false : true
+  ignore_public_acls      = startswith("private", "public") ? false : true
+  restrict_public_buckets = startswith("private", "public") ? false : true
 }
 
 
